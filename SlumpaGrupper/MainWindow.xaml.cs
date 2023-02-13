@@ -24,20 +24,17 @@ namespace SlumpaGrupper
         {
             InitializeComponent();
 
-
             this.Top = Properties.Settings.Default.Top;
             this.Left = Properties.Settings.Default.Left;
             this.Height = Properties.Settings.Default.Height;
             this.Width = Properties.Settings.Default.Width;
             GroupSizeTxtBox.Text = Properties.Settings.Default.GroupSize.ToString();
             fontSlider.Value = Properties.Settings.Default.Slider;
-            //DoWork(fontSlider.Value);
-            // Very quick and dirty - but it does the job
+            
             if (Properties.Settings.Default.WindowState == WindowState.Maximized)
             {
                 WindowState = WindowState.Maximized;
             }
-
 
             PopulatePersons();
 
@@ -74,7 +71,7 @@ namespace SlumpaGrupper
 
 
             NameTable.ItemsSource = persons.OrderBy(p => p.Name).ToList();
-            //NameTable.ItemsSource = persons.OrderBy(p => p.Name);
+            
 
             // Loads in last group from file
             // FIXME Json loading from file doesn't load expected values.
@@ -110,13 +107,10 @@ namespace SlumpaGrupper
 
         private void BindGroups()
         {
-            bool correctInput = false;
+            bool correctInput = int.TryParse(GroupSizeTxtBox.Text, out int groupSize);
 
-            correctInput = int.TryParse(GroupSizeTxtBox.Text, out int groupSize);
-
-            if (!correctInput)
+            if (!correctInput) //Parse returned false, textbox contains non int tokens
             {
-                // Antal grupper har inte en siffra som inmatning.
                 return;
             }
             
@@ -125,51 +119,46 @@ namespace SlumpaGrupper
                 person.Presented = false;
             }
 
-            var partisipatingPersons = persons
+            var participatingPersons = persons
                 .Where(p => p.IsParticipating == true)
                 .OrderBy(p => Guid.NewGuid()) // makes the order random 
                 .ToArray();
-            groupSize = Math.Min(groupSize, partisipatingPersons.Length); //TODO: Make sure correct groupSize is displayed in app
-            int numberOfGroups = (int)Math.Round(partisipatingPersons.Length / (float)groupSize, 0);
+            groupSize = Math.Min(groupSize, participatingPersons.Length); //TODO: Make sure correct groupSize is displayed in app
+            int numberOfGroups = (int)Math.Round(participatingPersons.Length / (float)groupSize, 0);
 
             int groupNumber = 0;
 
-            foreach (var person in partisipatingPersons)
+            foreach (var person in participatingPersons)
             {
-                int index = groupNumber++ % numberOfGroups;
-                person.Group = $"Grupp {index + 1}";
+                person.Group = $"Grupp {groupNumber++ % numberOfGroups + 1}";
             }
 
-            var groups = partisipatingPersons
+            groupDataContent = participatingPersons
                 .GroupBy(o => o.Group)
                 .ToArray();
-
-            groupDataContent = groups;
 
             // FIXME Json saving current group data is disabled until loading works
             //TextReader.SaveGroup(filteredSortedPersons);
 
             TextReader.SaveToFile(MainWindow.persons);
 
-            groupData.ItemsSource = groups;
+            groupData.ItemsSource = groupDataContent;
             groupPanel.Visibility = Visibility.Visible;
         }
 
         private void GroupOnOpen()
         {
-            var groups = persons
+            groupDataContent = persons
                 .Where(p => p.Group != null && p.IsParticipating)
                 .GroupBy(p => p.Group)
                 .ToArray();
-
-            groupDataContent = groups;
 
             // FIXME Json saving current group data is disabled until loading works
             //TextReader.SaveGroup(groups);
 
             TextReader.SaveToFile(MainWindow.persons);
 
-            groupData.ItemsSource = groups;
+            groupData.ItemsSource = groupDataContent;
             groupPanel.Visibility = Visibility.Visible;
         }
         //TODO: remove RebindGroups()?  

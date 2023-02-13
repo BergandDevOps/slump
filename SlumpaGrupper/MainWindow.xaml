@@ -55,18 +55,14 @@
                 <Button Content="Randomize Groups" x:Name="GroupBtn" Margin="0, 10"  Click="GroupBtn_Click" Padding="4" />
             </StackPanel>
 
-            <DataGrid x:Name="NameTable" RowHeaderWidth="0" Grid.Row="2" Margin="0" AutoGenerateColumns="False" GridLinesVisibility="Horizontal" AlternatingRowBackground="#FFEFEFEF" AlternationCount="1">
+            <DataGrid x:Name="NameTable" RowHeaderWidth="0" Grid.Row="2" Margin="0" AutoGenerateColumns="false" GridLinesVisibility="Horizontal" AlternatingRowBackground="#FFEFEFEF" AlternationCount="1">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+                    <DataGridCheckBoxColumn Header="Test" Binding="{Binding TestProp}"/>
                     <DataGridCheckBoxColumn Header="Participating" Binding="{Binding IsParticipating}"/>
                 </DataGrid.Columns>
-                <!--<DataGrid.RowDetailsTemplate>
-            <DataTemplate>
-                <TextBlock Text="{Binding }"/>
-                
-            </DataTemplate>
-        </DataGrid.RowDetailsTemplate>-->
             </DataGrid>
+            
         </Grid>
 
         <Grid x:Name="groupPanel" Margin="10,0,0,0" Grid.Column="2" Visibility="Hidden" >
