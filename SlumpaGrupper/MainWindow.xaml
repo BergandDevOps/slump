@@ -7,7 +7,7 @@
         Closing="TheWindow_Closing"
         mc:Ignorable="d"
         
-        Title="Group Randomizer Pro Ultra+" d:DesignHeight="635.435" d:DesignWidth="580.19">
+        Title="Group Randomizer Pro Ultra+Unlimited" d:DesignHeight="635.435" d:DesignWidth="580.19">
 
     <Window.Resources>
         <Style x:Key="GroupHeaderStyle" TargetType="{x:Type GroupItem}">

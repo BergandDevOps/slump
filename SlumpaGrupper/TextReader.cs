@@ -15,7 +15,6 @@ namespace SlumpaGrupper
     class TextReader
     {
 
-
         public static Person[] LoadFromFile()
         {
             string file = "Studenter.json";
